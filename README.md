@@ -42,3 +42,13 @@ Para os testes é necessario que o docker continue ativo, feito isso podemos rod
 ```
 npm test
 ```
+
+### Utilização
+
+A api conta com apenas uma rota:
+
+```
+http://localhost:1234/api/doppelgangers
+```
+
+Para testa-lá, pode-se simplesmente utilizar o navagador, uma vez que o verbo HTTP utilizado é o GET, ou Insomia/Postman.
