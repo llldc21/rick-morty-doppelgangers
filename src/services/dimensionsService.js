@@ -1,11 +1,14 @@
 const util = require("util");
 const request = require("request");
 const characterService = require("./characterService");
+const configService = require("./configService")
+const moment = require('moment')
 
 class DimensionsService {
   constructor() {
     this.request = util.promisify(request);
     this.CharacterService = new characterService();
+    this.ConfigService = new configService()
     this.url =
       process.env.CHARACTER_URL || "https://rickandmortyapi.com/api/location/";
   }
@@ -43,7 +46,7 @@ class DimensionsService {
       let params = results[i];
       let { residents, created } = params;
       data.residents = residents;
-      data.created = created
+      data.created = created;
     }
     await this.verifyCharacter(data.residents);
     return data;
@@ -54,7 +57,15 @@ class DimensionsService {
       let data = residents[i];
       const id = await this.removeNonNumeric(data);
       let characterExists = await this.CharacterService.findCharacterById(id);
-      if (characterExists) {
+      const apiDate = moment(residents.created);
+      const currentDate = moment();
+      let valid = moment(currentDate).isSame(apiDate);
+      await this.ConfigService.getFirstLoad().then(result => {
+        if (result === true) {
+          valid = true
+        }
+      })
+      if (characterExists & valid === true) {
         let dimensions_count = characterExists.dimensions_count;
         characterExists.dimensions_count = dimensions_count + 1;
         await this.CharacterService.updateCharacterById(characterExists);
@@ -65,7 +76,6 @@ class DimensionsService {
 
   async removeNonNumeric(resident) {
     resident = resident.replace(/[^0-9]/g, "");
-    console.log(resident)
     return resident;
   }
 }

@@ -10,7 +10,7 @@ class CharacterService {
   }
 
   async findCharacters() {
-    const params = await this.character.find({}).catch(error => {
+    const params = await this.character.find({}).sort([['dimensions_count', -1]]).catch(error => {
       console.log(error);
     });
 

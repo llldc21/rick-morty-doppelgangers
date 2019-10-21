@@ -1,4 +1,4 @@
-version: '3'
+version: '2'
 
 services:
   app:
@@ -6,7 +6,7 @@ services:
     restart: always
     build: .
     ports:
-      - "8080:8080"
+      - "1234:1234"
     depends_on:
       - mongodb
     networks:
